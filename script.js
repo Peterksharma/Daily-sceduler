@@ -13,7 +13,14 @@ $(function () {
       var timeBlock = $('<div>').addClass('row time-block').attr('id', 'hour-' + hour);
       var hourLabel = $('<div>').addClass('col-2 col-md-1 hour text-center py-3').text(hourToAmPm(hour));
       var textarea = $('<textarea>').addClass('col-8 col-md-10 description').attr('rows', '3');
+      var savedText = localStorage.getItem('hour-' + hour)
+      var saveBtn = $('<button>').addClass('btn saveBtn col-2 col-md-1').attr('aria-label', 'save');
+      var saveIcon = $('<i>').addClass('fas fa-save').attr('aria-hidden', 'true');
 
+      if (savedText) {
+        textarea.val(savedText);
+      }
+      
       //Adding the past, present, or future class
       if (hour < currentHour) {
         textarea.addClass('past');
@@ -23,12 +30,17 @@ $(function () {
         textarea.addClass('future');
       }
 
-      var saveBtn = $('<button>').addClass('btn saveBtn col-2 col-md-1').attr('aria-label', 'save');
-      var saveIcon = $('<i>').addClass('fas fa-save').attr('aria-hidden', 'true');
-
       saveBtn.append(saveIcon);
       timeBlock.append(hourLabel, textarea, saveBtn);
       $('#time-block-container').append(timeBlock);
+
+      //Saving the text to local storage
+      saveBtn.on('click', function () {
+        var clickedHour = $(this).parent().attr('id');
+        var textToSave = $(this).siblings('textarea').val();
+        localStorage.setItem(clickedHour, textToSave);
+        console.log('Save button has been activated. The text was saved to local storage');
+      });
     }
   }
   
