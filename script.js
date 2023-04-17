@@ -3,7 +3,50 @@ $(function () {
 
   var currentDay = $("#currentDay");
   var currentDate = dayjs().format('dddd, MMMM Do');
+  var currentHour = dayjs().hour();
   currentDay.text(currentDate);
+  function createTimeBlocks() {
+    var startHour = 9; // 9AM
+    var endHour = 18; // 6PM
+
+    for (var hour = startHour; hour < endHour; hour++) {
+      var timeBlock = $('<div>').addClass('row time-block').attr('id', 'hour-' + hour);
+      var hourLabel = $('<div>').addClass('col-2 col-md-1 hour text-center py-3').text(hourToAmPm(hour));
+      var textarea = $('<textarea>').addClass('col-8 col-md-10 description').attr('rows', '3');
+
+      //Adding the past, present, or future class
+      if (hour < currentHour) {
+        textarea.addClass('past');
+      } else if (hour === currentHour) {
+        textarea.addClass('present');
+      } else { 
+        textarea.addClass('future');
+      }
+
+      var saveBtn = $('<button>').addClass('btn saveBtn col-2 col-md-1').attr('aria-label', 'save');
+      var saveIcon = $('<i>').addClass('fas fa-save').attr('aria-hidden', 'true');
+
+      saveBtn.append(saveIcon);
+      timeBlock.append(hourLabel, textarea, saveBtn);
+      $('#time-block-container').append(timeBlock);
+    }
+  }
+  
+  function hourToAmPm(hour) {
+    if (hour < 12) {
+      return hour + 'AM';
+    } else if (hour === 12) {
+      return '12PM';
+    } else {
+      return (hour - 12) + 'PM';
+    }
+  }
+
+  var currentHour = dayjs().hour();
+  createTimeBlocks();
+
+});
+
 
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
@@ -23,7 +66,3 @@ $(function () {
   // attribute of each time-block be used to do this?
   //
   // TODO: Add code to display the current date in the header of the page.
-});
-
-
-// format('dddd, MMMM D')
